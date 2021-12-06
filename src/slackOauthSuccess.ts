@@ -3,7 +3,7 @@ import { IncomingMessage, ServerResponse } from "node:http";
 import { readFile } from "fs/promises";
 import { join } from "path";
 import { app } from ".";
-import { generateAuthUrl } from "./util";
+import { generateAuthUrl } from "./resoluteOauth";
 
 export default async (
 	installation: Installation,
