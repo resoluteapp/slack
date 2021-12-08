@@ -57,8 +57,6 @@ export default (app: App) => {
 			return;
 		}
 
-		console.log("hmm");
-
 		await axios.post(
 			"https://useresolute.com/api/reminders",
 			{

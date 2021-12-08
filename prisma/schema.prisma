@@ -12,13 +12,14 @@ datasource db {
 
 model User {
   id            Int    @id @default(autoincrement())
-  resoluteId    Int    @unique
+  resoluteId    Int
   resoluteToken String
   slackId       String
   team          Team   @relation(fields: [teamId], references: [id])
   teamId        String
 
   @@unique([slackId, teamId])
+  @@unique([resoluteId, teamId])
 }
 
 model Team {

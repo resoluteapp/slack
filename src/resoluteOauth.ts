@@ -27,8 +27,6 @@ export async function code(req: IncomingMessage, res: ServerResponse) {
 		const slackId = payload.userId as string;
 		const teamId = payload.teamId as string;
 
-		console.log(payload);
-
 		const {
 			data: { access_token },
 		} = await axios.post("https://useresolute.com/api/oauth/token", {
@@ -60,6 +58,21 @@ export async function code(req: IncomingMessage, res: ServerResponse) {
 				resoluteToken: access_token,
 			},
 		});
+
+		if (payload.reminder) {
+			await axios.post(
+				"https://useresolute.com/api/reminders",
+				{
+					title: payload.reminder,
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${access_token}`,
+					},
+				}
+			);
+		}
+
 		res.end(
 			await readFile(join(__dirname, "..", "static/connectSuccess.html"))
 		);
