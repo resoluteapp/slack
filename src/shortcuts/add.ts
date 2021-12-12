@@ -57,16 +57,54 @@ export default (app: App) => {
 			return;
 		}
 
-		await axios.post(
-			"https://useresolute.com/api/reminders",
-			{
-				title: shortcut.message.text,
-			},
-			{
-				headers: {
-					Authorization: `Bearer ${user.resoluteToken}`,
+		try {
+			await axios.post(
+				"https://useresolute.com/api/reminders",
+				{
+					title: shortcut.message.text,
 				},
-			}
-		);
+				{
+					headers: {
+						Authorization: `Bearer ${user.resoluteToken}`,
+					},
+				}
+			);
+		} catch (e) {
+			await client.views.open({
+				trigger_id: shortcut.trigger_id,
+				view: {
+					type: "modal",
+					title: {
+						type: "plain_text",
+						text: "Add to Resolute",
+					},
+					blocks: [
+						{
+							type: "section",
+							text: {
+								type: "mrkdwn",
+								text: ":wave: Hey there! Please take a second to connect your Resolute account to Slack—I'll automatically save that message once you're finished.",
+							},
+							accessory: {
+								type: "button",
+								text: {
+									type: "plain_text",
+									text: "Connect to Resolute",
+								},
+								action_id: "connect",
+								style: "primary",
+								url: await generateAuthUrl(
+									shortcut.user.id,
+									shortcut.team!.id,
+									{
+										reminder: shortcut.message.text,
+									}
+								),
+							},
+						},
+					],
+				},
+			});
+		}
 	});
 };
