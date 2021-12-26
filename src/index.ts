@@ -1,35 +1,46 @@
 import { App } from "@slack/bolt";
 import { PrismaClient } from "@prisma/client";
 
-import installationStore from "./installationStore";
-import addShortcut from "./shortcuts/add";
-import slackOauthSuccess from "./slackOauthSuccess";
-import * as resoluteOauth from "./resoluteOauth";
+import AddShorcutController from "./controllers/add_shortcut";
+import SlackOauthController from "./controllers/slack_oauth";
+import ResoluteOauthController from "./controllers/resolute_oauth";
+import InstallationStoreController from "./controllers/installation_store";
 
-export const prisma = new PrismaClient();
+const prisma = new PrismaClient();
 
-export const app = new App({
+const installationStore = new InstallationStoreController({ prisma });
+
+const app = new App({
 	signingSecret: process.env.SLACK_SIGNING_SECRET,
 	clientId: process.env.SLACK_CLIENT_ID,
 	clientSecret: process.env.SLACK_CLIENT_SECRET,
 	stateSecret: process.env.JWT_SECRET,
-	scopes: ["chat:write", "commands"],
+	scopes: ["chat:write", "commands", "users:read"],
 	installerOptions: {
 		callbackOptions: {
-			success: slackOauthSuccess,
+			success: (...args) => {
+				new SlackOauthController({ app, prisma }).success(...args);
+			},
 		},
 	},
-	installationStore,
+	installationStore: installationStore,
 	customRoutes: [
 		{
 			method: "GET",
 			path: "/resolute/oauth_redirect",
-			handler: resoluteOauth.code,
+			handler: (...args) => {
+				new ResoluteOauthController({ app, prisma }).code(...args);
+			},
 		},
 	],
 });
 
-addShortcut(app);
+const addShortcutController = new AddShorcutController({ app, prisma });
+
+app.shortcut(
+	"add",
+	addShortcutController.addShortcut.bind(addShortcutController)
+);
 
 // Make auth buttons actually work
 app.action("connect", async ({ ack }) => {

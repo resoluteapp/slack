@@ -1,10 +1,13 @@
-import { InstallationStore, Installation } from "@slack/bolt";
-import { prisma } from ".";
+import { InstallationStore, Installation, Logger } from "@slack/bolt";
 import { Prisma } from "@prisma/client";
+import BaseController from "./base";
 
-export default <InstallationStore>{
-	async storeInstallation(installation) {
-		await prisma.team.upsert({
+export default class InstallationStoreController
+	extends BaseController
+	implements InstallationStore
+{
+	async storeInstallation(installation: Installation) {
+		await this.prisma!.team.upsert({
 			where: { id: installation.team?.id },
 			update: {
 				id: installation.team?.id!,
@@ -15,12 +18,13 @@ export default <InstallationStore>{
 				installation: installation as unknown as Prisma.InputJsonObject,
 			},
 		});
-	},
-	async fetchInstallation(query) {
-		const installation = await prisma.team.findUnique({
+	}
+
+	async fetchInstallation(query: any) {
+		const installation = await this.prisma!.team.findUnique({
 			where: { id: query.teamId },
 		});
 
 		return installation?.installation as unknown as Installation;
-	},
-};
+	}
+}

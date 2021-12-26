@@ -5,6 +5,7 @@
 	"author": "Caleb Denio",
 	"license": "MIT",
 	"devDependencies": {
+		"@types/node": "^17.0.1",
 		"dotenv": "^10.0.0",
 		"nodemon": "^2.0.15",
 		"prettier": "^2.5.0",
