@@ -4,7 +4,7 @@ import {
 	SlackShortcutMiddlewareArgs,
 } from "@slack/bolt";
 import axios from "axios";
-import connectModal from "../views/connect_modal";
+import connectModal from "../views/slack/connect_modal";
 import BaseController from "./base";
 
 export default class AddShortcutController extends BaseController {

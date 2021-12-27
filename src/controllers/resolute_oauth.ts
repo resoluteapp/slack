@@ -73,7 +73,7 @@ export default class ResoluteOauthController extends BaseController {
 			}
 
 			res.end(
-				await readFile(join(__dirname, "../../static/connectSuccess.html"))
+				await readFile(join(__dirname, "../src/html/connectSuccess.html"))
 			);
 		} catch (e) {
 			console.log(e);

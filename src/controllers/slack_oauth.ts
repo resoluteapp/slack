@@ -4,7 +4,7 @@ import { readFile } from "fs/promises";
 import { join } from "path";
 import ResoluteOauthController from "./resolute_oauth";
 import BaseController from "./base";
-import onboardingDm from "../views/onboarding_dm";
+import onboardingDm from "../views/slack/onboarding_dm";
 
 export default class SlackOauthController extends BaseController {
 	async success(
@@ -22,8 +22,6 @@ export default class SlackOauthController extends BaseController {
 			channel: installation.user.id,
 		});
 
-		res.end(
-			await readFile(join(__dirname, "../../static/installSuccess.html"))
-		);
+		res.end(await readFile(join(__dirname, "../src/html/installSuccess.html")));
 	}
 }
