@@ -1,4 +1,4 @@
-import { App } from "@slack/bolt";
+import { App, ExpressReceiver } from "@slack/bolt";
 import { PrismaClient } from "@prisma/client";
 
 import AddShorcutController from "./controllers/add_shortcut";
@@ -11,12 +11,10 @@ const prisma = new PrismaClient();
 
 const installationStore = new InstallationStoreController({ prisma });
 
-const app = new App({
-	signingSecret: process.env.SLACK_SIGNING_SECRET,
+const receiver = new ExpressReceiver({
+	signingSecret: process.env.SLACK_SIGNING_SECRET!,
 	clientId: process.env.SLACK_CLIENT_ID,
 	clientSecret: process.env.SLACK_CLIENT_SECRET,
-	stateSecret: process.env.JWT_SECRET,
-	scopes: ["chat:write", "commands", "users:read"],
 	installerOptions: {
 		callbackOptions: {
 			success: (...args) => {
@@ -25,15 +23,24 @@ const app = new App({
 		},
 	},
 	installationStore: installationStore,
-	customRoutes: [
-		{
-			method: "GET",
-			path: "/resolute/oauth_redirect",
-			handler: (...args) => {
-				new ResoluteOauthController({ app, prisma }).code(...args);
-			},
-		},
-	],
+	stateSecret: process.env.JWT_SECRET,
+	scopes: ["chat:write", "commands", "users:read"],
+});
+
+receiver.app.get("/resolute/oauth_redirect", (req, res) => {
+	new ResoluteOauthController({ app, prisma }).code(req, res);
+});
+
+receiver.app.get("/install", async (req, res) => {
+	res.redirect(
+		await receiver.installer!.generateInstallUrl({
+			scopes: ["chat:write", "commands", "users:read"],
+		})
+	);
+});
+
+const app = new App({
+	receiver,
 });
 
 const addShortcutController = new AddShorcutController({ app, prisma });
