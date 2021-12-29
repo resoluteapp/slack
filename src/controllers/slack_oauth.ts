@@ -22,6 +22,8 @@ export default class SlackOauthController extends BaseController {
 			channel: installation.user.id,
 		});
 
-		res.end(await readFile(join(__dirname, "../src/html/installSuccess.html")));
+		res.end(
+			await readFile(join(__dirname, "../views/html/installSuccess.html"))
+		);
 	}
 }

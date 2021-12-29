@@ -4,6 +4,7 @@ import { IncomingMessage, ServerResponse } from "node:http";
 import { join } from "path";
 import { readFile } from "fs/promises";
 import BaseController from "./base";
+import { Installation } from "@slack/bolt";
 
 export default class ResoluteOauthController extends BaseController {
 	async code(req: IncomingMessage, res: ServerResponse) {
@@ -70,14 +71,28 @@ export default class ResoluteOauthController extends BaseController {
 						},
 					}
 				);
+
+				const team = await this.prisma!.team.findUnique({
+					where: { id: teamId },
+				});
+				if (team !== null) {
+					const token = (team.installation as unknown as Installation).bot!
+						.token;
+
+					await this.app!.client.chat.postMessage({
+						token,
+						channel: slackId,
+						text: `Thanks for connecting your Resolute account to Slack! I've automatically added <${
+							(payload.reminder as any).url
+						}|this message> for you.`,
+					});
+				}
 			}
 
 			res.end(
-				await readFile(join(__dirname, "../src/html/connectSuccess.html"))
+				await readFile(join(__dirname, "../views/html/connectSuccess.html"))
 			);
 		} catch (e) {
-			console.log(e);
-
 			res.statusCode = 500;
 			res.end("Something went wrong.");
 		}

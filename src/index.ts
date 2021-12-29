@@ -5,6 +5,7 @@ import AddShorcutController from "./controllers/add_shortcut";
 import SlackOauthController from "./controllers/slack_oauth";
 import ResoluteOauthController from "./controllers/resolute_oauth";
 import InstallationStoreController from "./controllers/installation_store";
+import ResoluteCommandController from "./controllers/resolute_command";
 
 const prisma = new PrismaClient();
 
@@ -36,10 +37,18 @@ const app = new App({
 });
 
 const addShortcutController = new AddShorcutController({ app, prisma });
+const resoluteCommandController = new ResoluteCommandController({
+	app,
+	prisma,
+});
 
 app.shortcut(
 	"add",
 	addShortcutController.addShortcut.bind(addShortcutController)
+);
+app.command(
+	"/resolute",
+	resoluteCommandController.resoluteCommand.bind(resoluteCommandController)
 );
 
 // Make auth buttons actually work
