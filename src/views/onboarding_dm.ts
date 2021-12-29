@@ -1,4 +1,4 @@
-import ResoluteOauthController from "../../controllers/resolute_oauth";
+import ResoluteOauthController from "../controllers/resolute_oauth";
 
 export default async function ({
 	userId,

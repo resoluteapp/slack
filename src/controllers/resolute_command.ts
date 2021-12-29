@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { AllMiddlewareArgs, SlackCommandMiddlewareArgs } from "@slack/bolt";
-import onboardingDm from "../views/slack/onboarding_dm";
+import onboardingDm from "../views/onboarding_dm";
 import BaseController from "./base";
 
 export default class ResoluteCommandController extends BaseController {
