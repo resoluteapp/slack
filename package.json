@@ -23,5 +23,6 @@
 		"dev": "nodemon -r dotenv/config src/index.ts",
 		"build": "tsc",
 		"start": "node dist/index.js"
-	}
+	},
+	"packageManager": "yarn@3.1.1"
 }
