@@ -19,6 +19,8 @@ export default class AddShortcutController extends BaseController {
 			user: shortcut.message.user!,
 		});
 
+		const authTest = await client.auth.test();
+
 		const { permalink: url } = await client.chat.getPermalink({
 			channel: shortcut.channel.id,
 			message_ts: shortcut.message.ts,
@@ -31,6 +33,7 @@ export default class AddShortcutController extends BaseController {
 				slackUser.user?.profile?.real_name,
 			author_avatar: slackUser.user?.profile?.image_48,
 			url,
+			source: authTest.team,
 		};
 
 		const user = await this.prisma!.user.findUnique({
