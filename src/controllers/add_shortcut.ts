@@ -33,7 +33,7 @@ export default class AddShortcutController extends BaseController {
 				slackUser.user?.profile?.real_name,
 			author_avatar: slackUser.user?.profile?.image_48,
 			url,
-			source: authTest.team,
+			source: `${authTest.team} · #${shortcut.channel.name}`,
 		};
 
 		const user = await this.prisma!.user.findUnique({
