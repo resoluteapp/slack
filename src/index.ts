@@ -68,5 +68,3 @@ app.action("connect", async ({ ack }) => {
 
 	console.log("App started!");
 })();
-
-throw "hi";
