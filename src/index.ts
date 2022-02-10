@@ -1,7 +1,7 @@
 import { App, ExpressReceiver } from "@slack/bolt";
 import { PrismaClient } from "@prisma/client";
 
-import AddShorcutController from "./controllers/add_shortcut";
+import AddShortcutController from "./controllers/add_shortcut";
 import SlackOauthController from "./controllers/slack_oauth";
 import ResoluteOauthController from "./controllers/resolute_oauth";
 import InstallationStoreController from "./controllers/installation_store";
@@ -43,7 +43,7 @@ const app = new App({
 	receiver,
 });
 
-const addShortcutController = new AddShorcutController({ app, prisma });
+const addShortcutController = new AddShortcutController({ app, prisma });
 const resoluteCommandController = new ResoluteCommandController({
 	app,
 	prisma,
@@ -68,3 +68,5 @@ app.action("connect", async ({ ack }) => {
 
 	console.log("App started!");
 })();
+
+throw "hi";
