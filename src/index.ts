@@ -27,6 +27,10 @@ const receiver = new ExpressReceiver({
 	scopes: ["chat:write", "commands", "users:read"],
 });
 
+receiver.app.get("/", (req, res) => {
+	res.redirect("https://useresolute.com/integrations");
+});
+
 receiver.app.get("/resolute/oauth_redirect", (req, res) => {
 	new ResoluteOauthController({ app, prisma }).code(req, res);
 });
